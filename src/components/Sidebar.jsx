@@ -2,65 +2,78 @@ import React, { useState } from "react";
 import { logout } from "../utils/auth";
 import { Link } from "react-router-dom";
 
+// Lucide Icons
+import {
+  Users,
+  Database,
+  Monitor,
+  Settings,
+  LogOut,
+  Store,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
+
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
 
   return (
     <div
-      className={`h-screen bg-[#111] text-white transition-all duration-300 
-      ${open ? "w-64" : "w-16"} flex flex-col`}
+      className={`h-screen bg-[#0d0d0d] text-white transition-all duration-300 
+      ${open ? "w-64" : "w-20"} flex flex-col border-r border-white/10`}
     >
-      {/* Toggle button */}
-      <div className="flex justify-end p-3">
+
+      {/* Logo Section */}
+      <div className="flex items-center gap-3 px-4 py-5 border-b border-white/10">
+        <img
+          src="/logo.png"
+          alt="Logo"
+          className={`transition-all duration-300 ${open ? "w-10" : "w-8"}`}
+        />
+        {open && <h1 className="text-xl font-semibold">FOLT Admin</h1>}
+      </div>
+
+      {/* Toggle Button */}
+      <div className="flex justify-end p-2">
         <button
           onClick={() => setOpen(!open)}
           className="bg-white/10 p-2 rounded hover:bg-white/20"
         >
-          {open ? "◀" : "▶"}
+          {open ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>
       </div>
 
-      {/* Menu Items */}
-      <nav className="flex-1 mt-6">
-        <Link to="/resellers">
-          <div className="p-3 hover:bg-white/10 cursor-pointer">
-            {open ? "Resellers" : "R"}
-          </div>
-        </Link>
-
-        <Link to="/devices">
-          <div className="p-3 hover:bg-white/10 cursor-pointer">
-            {open ? "Devices" : "D"}
-          </div>
-        </Link>
-
-        <Link to="/users">
-          <div className="p-3 hover:bg-white/10 cursor-pointer">
-            {open ? "Users" : "U"}
-          </div>
-        </Link>
-
-        <Link to="/services">
-          <div className="p-3 hover:bg-white/10 cursor-pointer">
-            {open ? "Services" : "S"}
-          </div>
-        </Link>
-        <Link to="/settings">
-          <div className="p-3 hover:bg-white/10 cursor-pointer">
-            {open ? "Settings" : "S"}
-          </div>
-        </Link>
+      {/* Menu */}
+      <nav className="flex-1 mt-4 space-y-1">
+        <SidebarItem to="/resellers" open={open} label="Resellers" icon={<Store size={20} />} />
+        <SidebarItem to="/devices" open={open} label="Devices" icon={<Monitor size={20} />} />
+        
+        <SidebarItem to="/users" open={open} label="Users" icon={<Users size={20} />} />
+        
+        <SidebarItem to="/services" open={open} label="Services" icon={<Database size={20} />} />
+        
+        <SidebarItem to="/settings" open={open} label="Settings" icon={<Settings size={20} />} />
       </nav>
 
       {/* Logout */}
       <button
         onClick={logout}
-        className="p-3 bg-red-500 hover:bg-red-600 w-full text-left"
+        className="flex items-center gap-3 p-3 bg-red-600 hover:bg-red-700 w-full text-left"
       >
-        {open ? "Logout" : "L"}
+        <LogOut size={20} />
+        {open && "Logout"}
       </button>
     </div>
   );
 };
+
+const SidebarItem = ({ to, label, icon, open }) => (
+  <Link to={to}>
+    <div className="flex items-center gap-3 p-3 hover:bg-white/10 cursor-pointer rounded-md transition-all">
+      <span>{icon}</span>
+      {open && <span>{label}</span>}
+    </div>
+  </Link>
+);
 
 export default Sidebar;
