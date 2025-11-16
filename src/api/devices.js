@@ -6,17 +6,29 @@ export const getDevices = async () => {
   return res.data;
 };
 
-export const createDevice = async (payload) => {
-  const res = await API.post(`/device`, payload);
-  return res.data;
+export const getDeviceStatus = async (id) => {
+  const res = await API.get(`/device/${id}/status`);
+  console.log(res.data);
+  return res.data.status; // expected: "online" or "offline"
 };
 
-export const updateDevice = async (id, payload) => {
-  const res = await API.put(`/device/${id}`, payload);
-  return res.data;
+// Search ONU by SN
+export const searchONUBySN = async (deviceId, sn) => {
+  const res = await API.post(`/device/${deviceId}/onu/search/sn`, { sn });
+  return res.data; // returns object with status, Description, FSP, SN, ONTID, VendorSN, LineProfile
 };
 
-export const deleteDevice = async (id) => {
-  const res = await API.delete(`/device/${id}`);
+// Reboot ONU
+export const rebootONU = async (deviceId, FSP, ONTID) => {
+  const res = await API.post(`/device/${deviceId}/onu/reset`, { FSP, ONTID });
+  return res.data; // important to return the message
+};
+
+
+// Delete ONU
+export const deleteONU = async (deviceId, FSP, ONTID, SN, Description) => {
+  const res = await API.delete(`/device/${deviceId}/onu/delete`, {
+    data: { FSP, ONTID, SN, Description }
+  });
   return res.data;
 };
