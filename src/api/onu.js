@@ -2,7 +2,9 @@ import API from "./axiosInstance";
 
 export const searchONU = async (query) => {
   const res = await API.get(`/onu/search`, {
-    params: { query }
+    params: { query,
+      owner: "gov" 
+     }
   });
   return res.data;
 };

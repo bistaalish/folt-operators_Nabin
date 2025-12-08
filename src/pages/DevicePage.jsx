@@ -90,12 +90,6 @@ const DevicePage = () => {
 
       {/* ---------------- Autofind + Search Bar ---------------- */}
       <div className="flex items-center gap-2 mb-6">
-        <button
-          onClick={handleAutofind}
-          className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded text-white font-semibold transition"
-        >
-          {loadingAutofind ? "Autofinding..." : "Autofind"}
-        </button>
 
         <input
           type="text"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { searchONUBySN, rebootONU, deleteONU } from "../api/devices";
+import { searchONUBySN, rebootONU, deleteONU, getOptical } from "../api/devices";
 
 const ONUDetailPage = () => {
   const { id, sn } = useParams(); // Device ID and ONU SN
@@ -9,6 +9,7 @@ const ONUDetailPage = () => {
   const { device } = location.state || {}; // optional device info
 
   const [onuDetails, setONUDetails] = useState(null);
+  const [rxPower, setRxPower] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionType, setActionType] = useState(""); // "reboot" or "delete"
@@ -21,6 +22,16 @@ const ONUDetailPage = () => {
       try {
         const data = await searchONUBySN(id, sn);
         setONUDetails(data);
+
+        // If ONU is online, fetch RX power
+        if (data.status?.toLowerCase() === "online") {
+          try {
+            const opticalData = await getOptical(id, data.FSP, data.ONTID);
+            setRxPower(opticalData.ONU_RX);
+          } catch (optErr) {
+            console.error("Failed to fetch optical data:", optErr);
+          }
+        }
       } catch (err) {
         console.error("Failed to fetch ONU:", err);
         setError("Unable to fetch ONU details.");
@@ -98,9 +109,7 @@ const ONUDetailPage = () => {
         <h1 className="text-2xl font-bold mb-4 text-green-400">ONU Details</h1>
 
         {/* Device Info */}
-        <p className="text-gray-400 mb-4">
-          Device: {device?.name || "Unknown"} ({device?.ip || "Unknown IP"})
-        </p>
+     
 
         {/* ONU Details Grid */}
         <div className="grid grid-cols-2 gap-4">
@@ -125,6 +134,11 @@ const ONUDetailPage = () => {
           <div className="p-2 bg-gray-900 rounded">
             <strong>Line Profile:</strong> {onuDetails.LineProfile || "N/A"}
           </div>
+          {onuDetails.status?.toLowerCase() === "online" && (
+            <div className="p-2 bg-gray-900 rounded col-span-2">
+              <strong>RX Power:</strong> {rxPower ?? "Fetching..."} dBm
+            </div>
+          )}
           <div className="p-2 bg-gray-900 rounded col-span-2">
             <strong>Last Down Cause:</strong> {onuDetails.Lastdowncause || "N/A"}
           </div>
@@ -144,17 +158,7 @@ const ONUDetailPage = () => {
             {actionLoading && actionType === "reboot" ? "Rebooting..." : "Reboot"}
           </button>
 
-          <button
-            onClick={handleDelete}
-            disabled={actionLoading}
-            className={`px-4 py-2 rounded font-semibold text-white ${
-              actionLoading && actionType === "delete"
-                ? "bg-red-600 cursor-not-allowed"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-          >
-            {actionLoading && actionType === "delete" ? "Deleting..." : "Delete"}
-          </button>
+  
         </div>
       </div>
     </div>
