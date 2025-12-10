@@ -158,11 +158,11 @@ const DevicePage = () => {
             <table className="min-w-full table-auto border border-gray-700">
               <thead>
                 <tr className="bg-gray-800 text-left">
+                  <th className="px-4 py-2 border-b">#</th>
                   <th className="px-4 py-2 border-b">FSP</th>
                   <th className="px-4 py-2 border-b">ONTID</th>
                   <th className="px-4 py-2 border-b">SN</th>
                   <th className="px-4 py-2 border-b">Description</th>
-                  <th className="px-4 py-2 border-b">Device ID</th>
                 </tr>
               </thead>
 
@@ -173,11 +173,11 @@ const DevicePage = () => {
                     onClick={() => handleRowClick(onu)}
                     className="hover:bg-gray-900 cursor-pointer transition"
                   >
+                    <td className="px-4 py-2 border-b">{idx + 1}</td>
                     <td className="px-4 py-2 border-b">{onu.FSP}</td>
                     <td className="px-4 py-2 border-b">{onu.ONTID}</td>
                     <td className="px-4 py-2 border-b break-all">{onu.SN}</td>
                     <td className="px-4 py-2 border-b">{onu.desc}</td>
-                    <td className="px-4 py-2 border-b">{onu.device_id}</td>
                   </tr>
                 ))}
               </tbody>
